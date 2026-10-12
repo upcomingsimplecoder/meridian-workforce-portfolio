@@ -2,8 +2,8 @@
 
 Meridian connects workforce planning, compensation, and qualitative talent
 review around one question: can a reviewer reconstruct this decision?
-It is an independent synthetic portfolio project with no Morgan Stanley
-affiliation or proprietary employer data. AI is OFF.
+It is an independent synthetic portfolio project with no employer affiliation
+or proprietary employer data. AI is OFF.
 
 ## Data and trust
 

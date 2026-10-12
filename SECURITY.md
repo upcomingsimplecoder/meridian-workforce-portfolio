@@ -2,7 +2,7 @@
 
 Meridian is a portfolio application for fictional data. Do not connect real
 employee records, proprietary employer material, or payroll data. It has no
-Morgan Stanley affiliation or compliance/enterprise MFA claim. AI is OFF.
+employer affiliation or compliance/enterprise MFA claim. AI is OFF.
 
 The browser calls Next.js and FastAPI, never Meridian business tables directly.
 OIDC uses generated, distinct fictional accounts. The API resolves current

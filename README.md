@@ -6,7 +6,7 @@ Meridian is a workforce planning and compensation system that can reproduce a fi
 
 Independent synthetic portfolio project.
 
-The hard part of workforce planning is not displaying employee records. It is knowing what the organization knew at the time, what changed, who approved which version, and whether the financial result can be reproduced later. **Decision Replay** answers that last question by rebuilding a result from its pinned evidence.
+Workforce plans need a reliable history: what was known at the time, what changed, who approved which version, and whether the result can be reproduced later. **Decision Replay** rebuilds that result from pinned evidence.
 
 For a February 29, 2028 hire, the verified twelve-month scenario is:
 
@@ -97,11 +97,20 @@ Analytics drift stays unpublished until a rerun matches its pinned source. Local
 
 ## Verification
 
-The main merge run passed 807 Python tests: 757 domain tests and 50 analytics tests. It also passed 18 PostgreSQL identity tests, 60 frontend tests, and 117 browser tests, with 39 cases each on Chromium, Firefox, and WebKit. The OIDC and demo setup passed 12 checks. DuckDB/dbt passed one model and five data tests.
+The [public main CI run](https://github.com/upcomingsimplecoder/meridian-workforce-portfolio/actions/runs/38257301139) passed all required jobs:
+
+| Check | Result |
+| --- | --- |
+| Python domain and analytics | 807 passed |
+| PostgreSQL identity | 18 passed |
+| Frontend | 60 passed |
+| Browser E2E | 117 passed across three engines |
+| OIDC and clean demo setup | 12 passed |
+| DuckDB/dbt | One model and five data tests passed |
 
 The worker-kill drill stopped a consumer after it wrote an export but before acknowledgement. Retry recovered one artifact and one receipt. Migration, database reconnect, isolated restore, independent financial-oracle, and reconciliation tests also ran. See the [audit summary](docs/PUBLIC_AUDIT_SUMMARY.md) for the exact evidence and hosted-test boundary.
 
-GitHub did not start the final aggregate verification job for this merge because the account billing check blocked runner startup. Product test jobs passed, but main CI is not green. Hosted product workflows and the independent keyboard-only review are still pending.
+Hosted ingestion, a returned scenario, and repeated Decision Replay have been observed against persisted state. The complete hosted workflow, recovery, and manual keyboard acceptance remain open. The audit summary records that boundary.
 
 ## Run locally
 
@@ -126,7 +135,7 @@ make down
 
 The live frontend is [meridian-workforce.vercel.app](https://meridian-workforce.vercel.app). The API readiness endpoint is [meridian-api-icc5.onrender.com/ready](https://meridian-api-icc5.onrender.com/ready), and the synthetic OIDC issuer is [meridian-identity-3g3y.onrender.com](https://meridian-identity-3g3y.onrender.com/.well-known/openid-configuration). Vercel and both Render services deployed from `main` at `76c10ebeb7d7170cc47d36bca8bfe8d763f123fc`.
 
-Supabase hosts the transactional database and private `meridian-artifacts` bucket. The free Render option runs the outbox/export and analytics consumers as supervised processes beside the API. Their heartbeat rows were current in the latest database check. They share memory and availability, and the services can sleep. DuckDB/dbt is the configured hosted analytics engine. Snowflake is not required and is not live. The hosted product workflows and manual review remain pending.
+Supabase hosts the transactional database and private `meridian-artifacts` bucket. The free Render option runs the outbox/export and analytics consumers as supervised processes beside the API. Their heartbeat rows were current in the recorded database check. They share memory and availability, and the services can sleep. DuckDB/dbt powers the analytical implementation. Snowflake is not required or live.
 
 ## Repository structure
 
@@ -144,10 +153,10 @@ docs/              Guides, ADRs, and concise audit summary
 
 ## Limitations
 
-The free Render services may sleep and have limited memory. They are a portfolio demo, not an uptime or production-scale claim. Hosted user journeys and manual review are pending. The project does not claim enterprise MFA, compliance certification, penetration testing, payroll integration, or live Snowflake.
+The free Render services may sleep and have limited memory. Full hosted workflow, recovery, and keyboard acceptance are incomplete. The project does not claim production scale, enterprise MFA, compliance certification, penetration testing, payroll integration, or live Snowflake.
 
 ## About the project
 
-Meridian is an independent portfolio project. It is not affiliated with Morgan Stanley, Microsoft, or any other employer. All people, organizations, compensation figures, and workflows in the demo are synthetic.
+Meridian is an independent portfolio project. It is not affiliated with any employer. All people, organizations, compensation figures, and workflows in the demo are synthetic.
 
 Project code is licensed under MIT. Third-party dependencies retain their own licenses. See the [portfolio one-pager](PORTFOLIO_ONE_PAGER.md) and [interview brief](INTERVIEW_BRIEF.md).
