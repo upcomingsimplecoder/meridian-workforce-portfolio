@@ -483,7 +483,7 @@ def test_analytics_worker_records_a_sanitized_timeout_class_and_retries(
     model = db.get(AnalyticsRun, run["id"])
     event = event_for(db, model)
 
-    def timed_out(*args):
+    def timed_out(*args, **kwargs):
         raise subprocess.TimeoutExpired(["dbt", "build"], timeout=600)
 
     monkeypatch.setattr(worker, "execute_run", timed_out)
