@@ -41,10 +41,10 @@ The frontend, API, and synthetic OIDC issuer are live from main commit
 private artifact storage. The free Render setup runs two consumers beside the
 API. Hosted journeys and manual keyboard review are not yet verified.
 
-Main product jobs passed 807 Python tests, 18 PostgreSQL identity tests, 60
+The public main workflow passed 826 Python tests, 18 PostgreSQL identity tests, 60
 frontend tests, 117 browser cases across Chromium, Firefox, and WebKit, 12
 OIDC/demo setup checks, DuckDB/dbt tests, and a worker-kill recovery drill.
-The public main workflow passed every required job. See the
+See the
 [audit summary](docs/PUBLIC_AUDIT_SUMMARY.md) for the hosted acceptance boundary.
 
 AI is OFF. DuckDB/dbt powers the hosted analytics configuration. Snowflake is
@@ -52,7 +52,7 @@ not required or claimed as live.
 
 ## About
 
-Meridian is an independent portfolio project. It is not affiliated with
-any employer. All people, organizations,
-compensation figures, and workflows in the demo are synthetic. No real
+Meridian is an independent portfolio project. It is not affiliated with any
+employer. All people, organizations, compensation figures, and workflows in
+the demo are synthetic. No real
 employee or employer data is connected.

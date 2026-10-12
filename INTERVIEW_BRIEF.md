@@ -21,7 +21,7 @@ The calculation uses pinned inputs and decimal arithmetic.
 - Source-recording time and business effective time are separate. A late
   correction does not change the version an earlier reviewer used.
 - Money uses Decimal with explicit currencies, FX assumptions, and rounding.
-- Returning a proposal creates a new revision and invalidates old approvals.
+- Revising a returned proposal creates a new version and invalidates old approvals.
   Reviewers cannot approve their own proposal or edit locked awards.
 - Content-addressed objects survive a crash before SQL acknowledgement. The
   outbox retries safely and verifies the existing bytes.
@@ -37,10 +37,10 @@ comparisons and the original result hash. Local workflow tests, PostgreSQL
 permission checks, worker termination/retry, database reconnect, restore,
 financial-oracle, and reconciliation tests passed.
 
-On the main merge, product jobs passed 807 Python tests, 18 PostgreSQL identity
+The public main workflow passed 826 Python tests, 18 PostgreSQL identity
 tests, 60 frontend tests, 117 browser cases across three engines, and 12
 OIDC/demo setup checks. DuckDB/dbt and the worker-kill drill also passed.
-The public main workflow passed every required job.
+See the [verification notes](docs/PUBLIC_AUDIT_SUMMARY.md).
 
 Hosted services are live, but the six hosted workflows and the independent
 manual and keyboard-only reviews have not been completed. AI is OFF. DuckDB/dbt
@@ -48,6 +48,5 @@ powers the hosted analytics configuration. Snowflake is not required or live.
 The demo uses synthetic data only and makes no enterprise MFA, certification,
 penetration-testing, payroll, or production-scale claim.
 
-Meridian is an independent portfolio project, not affiliated with any
-employer. All people, organizations, compensation
-figures, and workflows are synthetic.
+Meridian is an independent portfolio project, not affiliated with any employer.
+All people, organizations, compensation figures, and workflows are synthetic.

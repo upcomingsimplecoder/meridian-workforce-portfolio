@@ -97,11 +97,11 @@ Analytics drift stays unpublished until a rerun matches its pinned source. Local
 
 ## Verification
 
-The [public main CI run](https://github.com/upcomingsimplecoder/meridian-workforce-portfolio/actions/runs/38257301139) passed all required jobs:
+The [public main CI run](https://github.com/upcomingsimplecoder/meridian-workforce-portfolio/actions/runs/38278478309) passed all required jobs:
 
 | Check | Result |
 | --- | --- |
-| Python domain and analytics | 807 passed |
+| Python domain and analytics | 826 passed |
 | PostgreSQL identity | 18 passed |
 | Frontend | 60 passed |
 | Browser E2E | 117 passed across three engines |

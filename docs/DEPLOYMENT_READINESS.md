@@ -34,15 +34,16 @@ The OIDC issuer and endpoints use the hosted HTTPS identity service.
 Supabase reached Alembic schema 0011. The three application database accounts
 were checked over verified TLS. The private bucket has a 32 MiB object limit,
 and its write, checksum, duplicate-write, and corruption checks passed. The
-main workflow's product jobs passed 807 Python tests, 18 PostgreSQL identity
+public main workflow passed 826 Python tests, 18 PostgreSQL identity
 tests, 60 frontend tests, 117 browser cases across three engines, 12 OIDC/demo
 setup checks, DuckDB/dbt tests, and the worker-kill recovery drill.
 
 ## Open release gates
 
-The public main workflow is green. The private engineering archive's main
-workflow remains blocked because GitHub did not start its aggregate job after
-the account payment or spending-limit check. No payment setting was changed.
+The public main workflow is green. The private archive's original release-main
+run could not start its aggregate job after GitHub's account payment or
+spending-limit check. Archive verification is now manual. No payment setting
+was changed.
 
 Hosted ingestion, Finance scenario submission and HR return, and two matching
 Decision Replay attempts have persisted observations. Compensation has only
