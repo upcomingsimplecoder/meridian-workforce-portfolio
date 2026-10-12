@@ -39,9 +39,8 @@ financial-oracle, and reconciliation tests passed.
 
 On the main merge, product jobs passed 807 Python tests, 18 PostgreSQL identity
 tests, 60 frontend tests, 117 browser cases across three engines, and 12
-OIDC/demo setup checks. DuckDB/dbt and the worker-kill drill also passed. GitHub
-did not start the final aggregate job because its billing check blocked runner
-startup, so main CI is not green.
+OIDC/demo setup checks. DuckDB/dbt and the worker-kill drill also passed.
+The public main workflow passed every required job.
 
 Hosted services are live, but the six hosted workflows and the independent
 manual and keyboard-only reviews have not been completed. AI is OFF. DuckDB/dbt
@@ -49,6 +48,6 @@ powers the hosted analytics configuration. Snowflake is not required or live.
 The demo uses synthetic data only and makes no enterprise MFA, certification,
 penetration-testing, payroll, or production-scale claim.
 
-Meridian is an independent portfolio project, not affiliated with Morgan
-Stanley, Microsoft, or another employer. All people, organizations, compensation
+Meridian is an independent portfolio project, not affiliated with any
+employer. All people, organizations, compensation
 figures, and workflows are synthetic.

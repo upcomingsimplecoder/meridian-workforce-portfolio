@@ -28,7 +28,6 @@ and Vitest. Analytics uses real DuckDB/dbt and source reconciliation. Browsers
 use the running demo and generated credentials.
 
 ```sh
-.venv/bin/python scripts/gates.py --phase release-check --browsers
 .venv/bin/python scripts/worker_kill_drill.py
 ```
 
@@ -38,9 +37,16 @@ Browser fault helpers control project-owned local processes only.
 
 ## CI
 
-Each pull request change runs one workflow. Main runs the full workflow after a
-merge. Static checks and dependency security run first, so a lint or dependency
-failure does not start the expensive suites.
+Documentation and dependency-update policy edits run copy, link, inventory,
+and secret checks. They do not install the application or start databases and
+browsers. Code, dependency, migration, test, runtime configuration, and CI
+changes run the complete workflow. Unknown paths also require all suites.
+Manual workflow dispatch always requests full verification.
+
+Routine dependency version PRs are disabled. Security fixes are grouped by
+ecosystem and remain subject to full verification. Deployment previews are
+disabled for Dependabot branches. Static checks and dependency security run
+before the expensive suites.
 
 | Suite | Scope |
 | --- | --- |
@@ -54,8 +60,11 @@ The two backend suites include every discovered test module exactly once.
 They keep separate PostgreSQL services. Each browser also gets a separate
 stack and retains one Playwright worker; fault tests cannot interfere with a
 second browser. There are no automatic retries. The final `verify` check fails
-if any required suite fails, is cancelled, or does not run. Browser evidence
+if any suite required by the classified change fails, is cancelled, or does not run. Browser evidence
 must include every declared case without skips or retries.
+
+The documentation result says explicitly that product suites did not run. A
+failed product job cannot be converted into a documentation pass.
 
 Python reports its twenty slowest cases. Browser case timings and bounded
 synthetic artifacts show where time goes. `make analytics` remains an

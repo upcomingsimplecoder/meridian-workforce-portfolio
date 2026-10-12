@@ -11,7 +11,7 @@ synthetic OIDC issuer is
 Both Render services run on the free plan and are configured to deploy only
 after GitHub checks pass.
 
-Supabase project `recdxudyiqjpdmcqtgtg` hosts PostgreSQL and the private
+A dedicated Supabase project hosts PostgreSQL and the private
 `meridian-artifacts` bucket. API, worker, identity, and operator roles are
 separate. Browser roles cannot query business tables or download stored
 artifacts directly.
@@ -40,15 +40,18 @@ setup checks, DuckDB/dbt tests, and the worker-kill recovery drill.
 
 ## Open release gates
 
-GitHub did not start the main workflow's final aggregate verification job
-because the account billing check blocked runner startup. Main CI is not green.
-No payment setting was changed and no test gate was bypassed.
+The public main workflow is green. The private engineering archive's main
+workflow remains blocked because GitHub did not start its aggregate job after
+the account payment or spending-limit check. No payment setting was changed.
 
-Endpoint health does not establish the hosted workflows. Ingestion, planning,
-compensation, talent, analytics drift repair, Decision Replay, worker restart,
-database reconnect, and current-grant artifact denial still need a complete
-hosted acceptance run. A fresh reviewer must also complete the critical browser
-journey and keyboard-only flow. These results remain NOT-TESTED.
+Hosted ingestion, Finance scenario submission and HR return, and two matching
+Decision Replay attempts have persisted observations. Compensation has only
+been configured and launched. The remaining workflows, worker restart,
+analytics outage, database reconnect, current-grant artifact denial, and full
+authorization negatives need a complete hosted acceptance run. Retained browser
+evidence, fresh manual review, and the critical keyboard-only flow are also open.
+The [verification notes](PUBLIC_AUDIT_SUMMARY.md) distinguish each observation
+from a completed release gate.
 
 The services use generated synthetic accounts. Passwords are not published as
 shared demo credentials. AI is OFF. No paid resource, enterprise MFA, always-on

@@ -1,44 +1,54 @@
 # Verification notes
 
-## Release revision and CI
+## Source and CI
 
-PR #1 was merged to `main` with regular merge commit
-`76c10ebeb7d7170cc47d36bca8bfe8d763f123fc`. Its product jobs passed 807
-Python tests, 18 PostgreSQL identity tests, 60 frontend tests, 117 browser
-cases across Chromium, Firefox and WebKit, and 12 OIDC/demo setup checks.
-DuckDB/dbt passed one model and five data tests. The worker-kill drill recovered
-one artifact and one receipt after a consumer stopped between the object write
-and database acknowledgement.
+The deployed release is private archive merge
+`76c10ebeb7d7170cc47d36bca8bfe8d763f123fc`. The curated public source is based
+on that release. Its [main workflow](https://github.com/upcomingsimplecoder/meridian-workforce-portfolio/actions/runs/38257301139)
+passed all required jobs at `b0aed945bfcd6f454e7c4923bc448b9df6b4a260`.
 
-GitHub did not start the final aggregate job because its billing check blocked
-runner startup. Product tests passed, but the main workflow is not green. The
-local gate evaluation passed against the downloaded run evidence. It does not
-change the GitHub workflow result.
+That run passed 757 domain and 50 analytics tests, 18 PostgreSQL identity
+tests, 60 frontend tests, and 117 browser cases: 39 each on Chromium,
+Firefox, and WebKit. The clean demo and OIDC check passed 12 cases. DuckDB/dbt
+passed one model and five data tests. The actual worker-kill drill recovered
+one artifact and one receipt after termination between object write and
+database acknowledgement. Migration, reconnect, restore, financial-oracle,
+and reconciliation checks also passed.
 
-## Hosted status
+The private archive's main run is separately blocked: GitHub refused to start
+its final job because of the account payment or spending-limit check. Its
+product jobs passed. That blocked run is not represented as a green workflow.
 
-Vercel serves the production frontend at
-[meridian-workforce.vercel.app](https://meridian-workforce.vercel.app).
-Render API and synthetic OIDC services are live from the same main revision.
-The API readiness, OIDC discovery, and JWKS endpoints returned HTTP 200. A
-read-only database check found fresh outbox and analytics heartbeats. That
-confirms both worker processes were alive during the check, but does not verify
-workflow recovery. Render auto-deploy waits for passing GitHub checks.
+## Hosted observations
 
-Supabase project `recdxudyiqjpdmcqtgtg` holds the transactional database and
-private `meridian-artifacts` bucket. The database has separate API, worker,
-and identity roles. The bucket has a 32 MiB limit and no browser object
-policies. The free Render configuration runs the outbox/export and analytics
-consumers as supervised processes beside the API. DuckDB/dbt is the hosted
-demo's configured analytics engine.
+[Meridian](https://meridian-workforce.vercel.app), the API, and the separate
+HTTPS synthetic identity service are live from the deployed release. A dedicated
+Supabase project contains PostgreSQL and the private `meridian-artifacts`
+bucket. API, worker, and identity database roles are separate. The bucket has
+a 32 MiB limit and no browser object policies. On the free Render plan, the
+export and analytics consumers are supervised processes beside the API.
 
-These checks confirm service reachability and configuration. They do not
-confirm authenticated hosted workflows, worker recovery or manual browser
-acceptance. Those gates have not been run yet.
+| Workflow | Recorded observation | Still required |
+| --- | --- | --- |
+| Ingestion | 4,960 accepted and 40 quarantined rows; correction published 5,000 rows; SQL confirmed the snapshot | Retained browser evidence and complete hosted negatives |
+| Planning | Two branches; leap-day difference USD 140,482.76; Finance submission and HR return persisted | Revision, resubmission, final approval, and concurrency checks |
+| Compensation | HR configured and launched one pinned review cycle | Manager proposal, exception, return/revision, signatures, lock, export |
+| Talent | Local and CI workflows passed | Hosted calibration, revisions, signatures, and lock |
+| Analytics | Local and CI DuckDB/dbt reconciliation and repair passed | Hosted run, drift repair, outage and recovery |
+| Decision Replay | Two hosted MATCH attempts reproduced the same USD 140,482.76 result and expected hash | Auditor/privacy negatives and retained download evidence |
+
+The observed browser sessions displayed screenshots but did not retain image
+files or traces. Complete hosted authorization, private-artifact grant rechecks,
+worker restart, analytics outage, database reconnect, fresh manual review, and
+the critical keyboard-only flow are incomplete. Automated local browser tests
+do not substitute for those checks.
 
 ## Scope
 
-AI is OFF. All demo people, organizations, pay and decisions are synthetic.
-Snowflake is not required and has not been verified live. The application does
-not claim enterprise MFA, compliance certification, penetration testing,
-payroll integration, or production scale.
+AI is OFF. All people, organizations, pay, and decisions are synthetic.
+DuckDB/dbt is the analytical implementation. Snowflake is not required or
+verified live. There is no employer affiliation, compliance certification,
+enterprise MFA, penetration-test, payroll integration, or production-scale claim.
+
+The public repository excludes the original blueprint, raw traces, local logs,
+and forensic history. Those materials remain in the private engineering archive.

@@ -5,8 +5,7 @@ import io
 import platform
 import tarfile
 from pathlib import Path
-
-import httpx
+from urllib.request import urlopen
 
 VERSION = "8.30.1"
 ARCHIVES = {
@@ -27,9 +26,10 @@ def main():
         raise SystemExit("No reviewed Gitleaks archive for this platform")
     name, digest = choice
     url = f"https://github.com/gitleaks/gitleaks/releases/download/v{VERSION}/gitleaks_{VERSION}_{name}.tar.gz"
-    response = httpx.get(url, follow_redirects=True, timeout=60)
-    response.raise_for_status()
-    data = response.content
+    with urlopen(url, timeout=60) as response:
+        data = response.read(32 * 1024 * 1024 + 1)
+    if len(data) > 32 * 1024 * 1024:
+        raise SystemExit("Gitleaks archive exceeds the download limit")
     if hashlib.sha256(data).hexdigest() != digest:
         raise SystemExit("Gitleaks archive checksum mismatch; refusing execution")
     target = Path(__file__).resolve().parents[1] / ".local/tools/gitleaks"

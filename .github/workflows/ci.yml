@@ -11,7 +11,34 @@ concurrency:
 env:
   NEXT_TELEMETRY_DISABLED: "1"
 jobs:
+  scope:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      full: ${{ steps.scope.outputs.full }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { fetch-depth: 0 }
+      - name: Classify every changed path
+        id: scope
+        run: python3 scripts/ci.py scope
+      - name: Portfolio copy, links and file inventory
+        env:
+          MERIDIAN_PUBLIC_REPOSITORY: ${{ github.event.repository.private == false }}
+        run: |
+          if [ "$MERIDIAN_PUBLIC_REPOSITORY" = true ]; then
+            python3 -m scripts.check_public_docs --public
+          else
+            python3 -m scripts.check_public_docs
+          fi
+      - name: Scan documentation changes for secrets
+        if: steps.scope.outputs.full == 'false'
+        run: |
+          python3 scripts/install_gitleaks.py
+          .local/tools/gitleaks dir . --redact
   checks:
+    needs: scope
+    if: needs.scope.outputs.full == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -32,7 +59,8 @@ jobs:
           mkdir -p docs/evidence
           .venv/bin/python scripts/generate_sbom.py
   native-setup:
-    needs: checks
+    needs: [scope, checks]
+    if: needs.scope.outputs.full == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
@@ -82,7 +110,8 @@ jobs:
           if test -x .venv/bin/python; then make down; fi
           if test -f .local/postgres/PG_VERSION; then "$MERIDIAN_PG_BIN/pg_ctl" -D .local/postgres -w -m fast stop; fi
   backend:
-    needs: checks
+    needs: [scope, checks]
+    if: needs.scope.outputs.full == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     strategy:
@@ -135,7 +164,8 @@ jobs:
           path: .local/public-evidence/
           retention-days: 7
   browsers:
-    needs: checks
+    needs: [scope, checks]
+    if: needs.scope.outputs.full == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
@@ -200,23 +230,23 @@ jobs:
         run: |
           if test -x .venv/bin/python; then make down; fi
   verify:
-    needs: [checks, native-setup, backend, browsers]
+    needs: [scope, checks, native-setup, backend, browsers]
     if: always()
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Download sanitized browser case manifests
-        if: always()
+        if: always() && needs.scope.outputs.full == 'true'
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: browser-*-shard-*-evidence
           path: .local/browser-evidence
           merge-multiple: false
       - name: Require complete browser case coverage
-        if: always()
+        if: always() && needs.scope.outputs.full == 'true'
         run: python3 scripts/ci.py browser-aggregate .local/browser-evidence
       - name: Require every complete suite
         env:
           MERIDIAN_CI_NEEDS: ${{ toJSON(needs) }}
-        run: python3 scripts/ci.py gate
+        run: python3 scripts/ci.py workflow-gate
