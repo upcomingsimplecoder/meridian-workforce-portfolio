@@ -280,9 +280,7 @@ def compare_report(connection: Any, run: AnalyticsRun) -> dict[str, Any]:
     }
 
 
-def execute_run(
-    db: Session, run: AnalyticsRun, *, preserve: Sequence[Any] = ()
-) -> AnalyticsResult:
+def execute_run(db: Session, run: AnalyticsRun, *, preserve: Sequence[Any] = ()) -> AnalyticsResult:
     existing = db.get(AnalyticsResult, run.id)
     if existing:
         return existing
