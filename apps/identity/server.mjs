@@ -113,6 +113,11 @@ app.get("/interaction/:uid", async (req, res) => {
     return res.status(400).send("Unsupported login interaction.");
   res.type("html").send(form(details.uid));
 });
+// A browser refresh or copied link can land on the form's POST action. Keep
+// that URL useful without changing the canonical OIDC interaction route.
+app.get("/interaction/:uid/login", (req, res) => {
+  res.redirect(303, `/interaction/${encodeURIComponent(req.params.uid)}`);
+});
 app.post(
   "/interaction/:uid/login",
   express.urlencoded({ extended: false, limit: "4kb" }),
