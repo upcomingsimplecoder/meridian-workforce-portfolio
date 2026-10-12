@@ -4,10 +4,10 @@
 
 The deployed release is private archive merge
 `76c10ebeb7d7170cc47d36bca8bfe8d763f123fc`. The curated public source is based
-on that release. Its [main workflow](https://github.com/upcomingsimplecoder/meridian-workforce-portfolio/actions/runs/38257301139)
-passed all required jobs at `b0aed945bfcd6f454e7c4923bc448b9df6b4a260`.
+on that release. Its [main workflow](https://github.com/upcomingsimplecoder/meridian-workforce-portfolio/actions/runs/38278478309)
+passed all required jobs at `98ed005701cede0f6bcc9e6350730c19d800bb89`.
 
-That run passed 757 domain and 50 analytics tests, 18 PostgreSQL identity
+That run passed 776 domain and 50 analytics tests, 18 PostgreSQL identity
 tests, 60 frontend tests, and 117 browser cases: 39 each on Chromium,
 Firefox, and WebKit. The clean demo and OIDC check passed 12 cases. DuckDB/dbt
 passed one model and five data tests. The actual worker-kill drill recovered
@@ -15,9 +15,10 @@ one artifact and one receipt after termination between object write and
 database acknowledgement. Migration, reconnect, restore, financial-oracle,
 and reconciliation checks also passed.
 
-The private archive's main run is separately blocked: GitHub refused to start
-its final job because of the account payment or spending-limit check. Its
-product jobs passed. That blocked run is not represented as a green workflow.
+The original private release-main run passed its product jobs, but GitHub
+refused to start its final job after the account payment or spending-limit
+check. That historical run is not represented as green. The private archive
+now uses manual verification; the active public repository requires `verify`.
 
 ## Hosted observations
 
