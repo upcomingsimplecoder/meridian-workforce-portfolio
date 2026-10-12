@@ -29,6 +29,7 @@ jobs:
           .venv/bin/ruff check apps/api/meridian apps/worker --select S
           .venv/bin/python scripts/install_gitleaks.py
           .local/tools/gitleaks git . --redact
+          mkdir -p docs/evidence
           .venv/bin/python scripts/generate_sbom.py
   native-setup:
     needs: checks
