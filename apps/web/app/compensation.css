@@ -1,0 +1,446 @@
+.comp-config,
+.comp-detail,
+.comp-cycle-list,
+.comp-evidence {
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.comp-config form,
+.comp-review-form,
+.comp-cycle-command {
+  margin-top: 18px;
+}
+.comp-config fieldset,
+.comp-review-form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.comp-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.comp-config label,
+.comp-detail label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.comp-config input,
+.comp-config select,
+.comp-config textarea,
+.comp-detail input,
+.comp-detail select,
+.comp-detail textarea,
+.comp-cycle-list input {
+  border: 1px solid #b7c2cf;
+  border-radius: 5px;
+  background: #fff;
+  color: #182b40;
+  font: inherit;
+  padding: 9px 10px;
+  min-height: 38px;
+  max-width: 100%;
+}
+.comp-config textarea,
+.comp-detail textarea {
+  resize: vertical;
+}
+.comp-config h3 {
+  margin-top: 26px;
+}
+.comp-config .comp-allocation {
+  border: 1px solid #d9e0e7;
+  padding: 16px;
+  margin: 14px 0;
+  border-radius: 6px;
+}
+.comp-allocation legend {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 0 5px;
+}
+.comp-config form > fieldset > label {
+  margin: 20px 0 12px;
+}
+.comp-cycle-list ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.comp-cycle-link {
+  cursor: pointer;
+  padding: 14px 16px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #d9e0e7;
+  background: #fff;
+  border-radius: 6px;
+  color: #182b40;
+  font: inherit;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.comp-cycle-link.selected {
+  border-color: #244768;
+  background: #f0f4f8;
+}
+.comp-cycle-link span,
+.comp-cycle-dates span {
+  font-size: 12px;
+  color: #4c6076;
+}
+.comp-cycle-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin: 18px 0;
+  padding: 14px 0;
+  border-block: 1px solid #e0e5eb;
+}
+.comp-cycle-dates strong {
+  display: block;
+  color: #182b40;
+  margin-top: 4px;
+}
+.comp-budgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+  gap: 14px;
+}
+.comp-budget {
+  border: 1px solid #d9e0e7;
+  border-radius: 6px;
+  padding: 16px;
+  background: #f7f9fb;
+}
+.comp-budget h3 {
+  margin: 0;
+  font-size: 14px;
+}
+.comp-budget p {
+  font-size: 12px;
+  margin: 6px 0 12px;
+}
+.comp-budget > strong {
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.comp-budget strong small {
+  font-size: 12px;
+  font-weight: 500;
+  color: #4c6076;
+}
+.comp-budget progress {
+  accent-color: #244768;
+  height: 8px;
+  width: 100%;
+  display: block;
+  margin: 14px 0;
+}
+.comp-budget dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  font-size: 12px;
+  gap: 7px;
+}
+.comp-budget dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.comp-guidelines,
+.comp-eligibility,
+.comp-review details {
+  margin: 18px 0;
+  padding: 16px;
+  background: #f7f9fb;
+  border: 1px solid #d9e0e7;
+  border-radius: 6px;
+}
+.comp-detail summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+.comp-detail details p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.comp-pins {
+  display: grid;
+  grid-template-columns: 175px minmax(0, 1fr);
+  gap: 10px;
+  font-size: 12px;
+  margin: 18px 0;
+}
+.comp-pins dt {
+  color: #4c6076;
+}
+.comp-pins dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono, monospace);
+}
+.comp-cycle-command {
+  border-block: 1px solid #d9e0e7;
+  padding: 18px 0;
+  max-width: 750px;
+}
+.comp-cycle-command .button {
+  margin-top: 10px;
+}
+.comp-roster-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+}
+.comp-roster-heading label {
+  min-width: 220px;
+}
+.comp-grid-scroll {
+  overflow: auto;
+  margin: 18px -1px;
+  border: 1px solid #d9e0e7;
+  border-radius: 5px;
+}
+.comp-grid {
+  width: 100%;
+  min-width: 1580px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.comp-grid caption,
+.comp-history caption {
+  padding: 10px 14px;
+  text-align: left;
+  color: #4c6076;
+  background: #f7f9fb;
+  font-size: 12px;
+}
+.comp-grid thead {
+  background: #ecf1f6;
+}
+.comp-grid th,
+.comp-grid td {
+  padding: 12px 10px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #e0e5eb;
+}
+.comp-grid th {
+  font-weight: 600;
+}
+.comp-grid tbody th {
+  min-width: 165px;
+}
+.comp-grid tr > :first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: #fff;
+  border-right: 1px solid #d9e0e7;
+}
+.comp-grid thead tr > :first-child {
+  background: #ecf1f6;
+}
+.comp-grid td.numeric {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.comp-grid small {
+  display: block;
+  color: #4c6076;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin-top: 5px;
+}
+.comp-grid input {
+  width: 110px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.comp-grid textarea {
+  width: 185px;
+  font-size: 12px;
+}
+.comp-grid .status-tag {
+  font-size: 10px;
+  white-space: nowrap;
+}
+.comp-person-link {
+  color: #183e65;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 650;
+  padding: 0;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.comp-row-actions {
+  display: grid;
+  gap: 8px;
+  width: 185px;
+}
+.comp-row-actions .button {
+  font-size: 11px;
+  padding: 7px 9px;
+  min-height: 32px;
+}
+.comp-comment {
+  display: block;
+  width: 185px;
+  overflow-wrap: anywhere;
+}
+.comp-exception,
+.comp-grid small.comp-exception {
+  color: #855000;
+}
+.comp-row-error {
+  color: #92352b;
+  line-height: 1.5;
+  font-size: 12px;
+}
+.comp-review {
+  padding: 20px;
+  margin-top: 20px;
+  border-color: #b7c9da;
+}
+.comp-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 18px;
+  margin: 24px 0;
+}
+.comp-metrics dt {
+  font-size: 12px;
+  color: #4c6076;
+}
+.comp-metrics dd {
+  margin: 6px 0 0;
+  font-size: 18px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.comp-steps {
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 12px;
+}
+.comp-steps li {
+  flex: 1;
+  padding: 14px;
+  border: 1px solid #d9e0e7;
+  border-radius: 5px;
+  font-size: 12px;
+}
+.comp-steps span,
+.comp-steps small {
+  display: block;
+  margin-top: 5px;
+}
+.comp-review-form {
+  border-block: 1px solid #d9e0e7;
+  padding-block: 18px;
+}
+.comp-review-form label {
+  margin-bottom: 15px;
+}
+.comp-review-form .comp-check {
+  flex-direction: row;
+  align-items: center;
+  font-weight: 500;
+}
+.comp-check input {
+  width: 18px;
+  min-height: 18px;
+  height: 18px;
+}
+.comp-history {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.comp-history th,
+.comp-history td {
+  border-bottom: 1px solid #d9e0e7;
+  text-align: left;
+  padding: 10px;
+  vertical-align: top;
+}
+.comp-history th {
+  white-space: nowrap;
+}
+.comp-history td {
+  overflow-wrap: anywhere;
+}
+.comp-hash {
+  display: block;
+  font-size: 11px;
+  color: #4c6076;
+  overflow-wrap: anywhere;
+  margin-top: 5px;
+}
+.comp-export {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid #d9e0e7;
+}
+.comp-evidence article {
+  border-top: 1px solid #d9e0e7;
+  padding-block: 16px;
+}
+.comp-evidence article p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.comp-reconciled {
+  padding: 14px;
+  background: #eaf4ef;
+  color: #23533e;
+  border-radius: 5px;
+}
+@media (max-width: 760px) {
+  .comp-config,
+  .comp-detail,
+  .comp-cycle-list,
+  .comp-evidence {
+    padding: 16px;
+  }
+  .comp-roster-heading,
+  .comp-cycle-link,
+  .comp-steps {
+    flex-direction: column;
+  }
+  .comp-roster-heading {
+    align-items: stretch;
+  }
+  .comp-pins {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .comp-pins dd {
+    margin-bottom: 9px;
+  }
+  .comp-cycle-list .panel-heading,
+  .comp-detail > .panel-heading {
+    flex-wrap: wrap;
+  }
+  .comp-form-grid {
+    grid-template-columns: 1fr;
+  }
+}

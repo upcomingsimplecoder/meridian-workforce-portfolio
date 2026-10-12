@@ -1,0 +1,35 @@
+name: Locked dependencies
+description: Install the same pinned Python and Node dependencies for each isolated suite.
+inputs:
+  browser:
+    description: One optional Playwright engine.
+    default: ""
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with: { node-version: "24.21.0", cache: npm }
+    - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      with: { python-version: "3.12.14" }
+    - name: Cache locked Python packages
+      uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+      with:
+        path: ~/.cache/uv
+        key: meridian-uv-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('uv.lock') }}
+    - name: Install lockfiles
+      shell: bash
+      run: make PYTHON=python dependencies
+    - name: Cache the selected Playwright browser
+      if: inputs.browser != ''
+      uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+      with:
+        path: ~/.cache/ms-playwright
+        key: >-
+          meridian-playwright-${{ runner.os }}-${{ runner.arch }}-${{ inputs.browser }}-${{ hashFiles('package-lock.json') }}
+    - name: Install the assigned browser
+      if: inputs.browser != ''
+      shell: bash
+      env: { MERIDIAN_BROWSER: "${{ inputs.browser }}" }
+      run: |
+        case "$MERIDIAN_BROWSER" in chromium|firefox|webkit) ;; *) exit 1 ;; esac
+        npx playwright install --with-deps "$MERIDIAN_BROWSER"

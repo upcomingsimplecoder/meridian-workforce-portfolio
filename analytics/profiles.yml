@@ -1,0 +1,7 @@
+meridian:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      path: "{{ env_var('MERIDIAN_ANALYTICS_PATH', '.local/analytics.duckdb') }}"
+      threads: "{{ env_var('MERIDIAN_DBT_THREADS', '2') | int }}"

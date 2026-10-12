@@ -1,0 +1,52 @@
+# Free demo option. Real workers are supervised processes in the API container.
+# No database, disk or paid worker is provisioned by this Blueprint.
+services:
+  - type: web
+    name: meridian-api
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    autoDeployTrigger: checksPass
+    dockerfilePath: ./infra/api.Dockerfile
+    dockerCommand: python -m scripts.hosted_runtime
+    healthCheckPath: /ready
+    envVars:
+      - { key: APP_ENV, value: production }
+      - { key: COOKIE_SECURE, value: "true" }
+      - { key: AI_ENABLED, value: "false" }
+      - { key: LOCAL_DATA_DIR, value: /data }
+      - { key: STORAGE_BACKEND, value: supabase }
+      - { key: SUPABASE_STORAGE_BUCKET, value: meridian-artifacts }
+      - { key: DBT_SEND_ANONYMOUS_USAGE_STATS, value: "false" }
+      - { key: MERIDIAN_DBT_THREADS, value: "1" }
+      - { key: ANALYTICS_DBT_TIMEOUT_SECONDS, value: "600" }
+      - { key: DATABASE_URL, sync: false }
+      - { key: WORKER_DATABASE_URL, sync: false }
+      - { key: SUPABASE_URL, sync: false }
+      - { key: SUPABASE_SERVICE_ROLE_KEY, sync: false }
+      - { key: OBJECT_SIGNING_KEY, sync: false }
+      - { key: OIDC_ISSUER, sync: false }
+      - { key: OIDC_CLIENT_ID, value: meridian-web }
+      - { key: OIDC_REDIRECT_URI, sync: false }
+      - { key: WEB_ORIGIN, sync: false }
+      - { key: API_ORIGIN, sync: false }
+  - type: web
+    name: meridian-identity
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    autoDeployTrigger: checksPass
+    dockerfilePath: ./infra/identity.Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - { key: APP_ENV, value: production }
+      - { key: COOKIE_SECURE, value: "true" }
+      - { key: OIDC_CLIENT_ID, value: meridian-web }
+      - { key: OIDC_DATABASE_URL, sync: false }
+      - { key: OIDC_ISSUER, sync: false }
+      - { key: OIDC_REDIRECT_URI, sync: false }
+      - { key: WEB_ORIGIN, sync: false }
+      - { key: OIDC_JWKS_JSON, sync: false }
+      - { key: OIDC_COOKIE_KEYS_JSON, sync: false }

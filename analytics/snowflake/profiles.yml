@@ -1,0 +1,19 @@
+meridian:
+  target: snowflake
+  outputs:
+    snowflake:
+      type: snowflake
+      account: "{{ env_var('DBT_ENV_SECRET_MERIDIAN_SF_ACCOUNT') }}"
+      user: "{{ env_var('DBT_ENV_SECRET_MERIDIAN_SF_USER') }}"
+      private_key_path: "{{ env_var('DBT_ENV_SECRET_MERIDIAN_SF_KEY') }}"
+      private_key_passphrase: "{{ env_var('DBT_ENV_SECRET_MERIDIAN_SF_PASSPHRASE', '') }}"
+      database: "{{ env_var('MERIDIAN_SF_DATABASE') }}"
+      warehouse: "{{ env_var('MERIDIAN_SF_WAREHOUSE') }}"
+      role: "{{ env_var('MERIDIAN_SF_TRANSFORM_ROLE') }}"
+      schema: "{{ env_var('MERIDIAN_SF_RUN_SCHEMA') }}"
+      threads: 1
+      client_session_keep_alive: false
+      query_tag: meridian_synthetic_validation
+      session_parameters:
+        TIMEZONE: UTC
+        STATEMENT_TIMEOUT_IN_SECONDS: 90

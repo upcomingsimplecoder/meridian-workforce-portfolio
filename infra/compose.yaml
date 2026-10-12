@@ -1,0 +1,94 @@
+name: meridian
+services:
+  postgres:
+    image: postgres:17.11
+    environment:
+      POSTGRES_USER: meridian
+      POSTGRES_DB: meridian_demo
+      POSTGRES_PASSWORD: ${MERIDIAN_DB_PASSWORD:?Set a generated database password}
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U meridian -d meridian_demo]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  init:
+    build: {context: .., dockerfile: infra/api.Dockerfile}
+    environment: &common-env
+      APP_ENV: local
+      OIDC_ISSUER: http://127.0.0.1:4017
+      OIDC_INTERNAL_ORIGIN: http://identity:4017
+      OIDC_CLIENT_ID: meridian-web
+      OIDC_REDIRECT_URI: http://127.0.0.1:3017/auth/callback
+      WEB_ORIGIN: http://127.0.0.1:3017
+      COOKIE_SECURE: 'false'
+      LOCAL_DATA_DIR: /data
+      DATABASE_URL: postgresql+psycopg://meridian:${MERIDIAN_DB_PASSWORD}@postgres:5432/meridian_demo
+      MIGRATION_DATABASE_URL: postgresql+psycopg://meridian:${MERIDIAN_DB_PASSWORD}@postgres:5432/meridian_demo
+      MERIDIAN_API_DB_PASSWORD: ${MERIDIAN_API_DB_PASSWORD:?Set the distinct API password}
+      MERIDIAN_WORKER_DB_PASSWORD: ${MERIDIAN_WORKER_DB_PASSWORD:?Set the distinct worker password}
+      MERIDIAN_IDENTITY_DB_PASSWORD: ${MERIDIAN_IDENTITY_DB_PASSWORD:?Set the distinct identity password}
+    command: [/bin/sh, -c, 'alembic upgrade head && python -m meridian.seed && python -m scripts.provision_db --no-env']
+    volumes: [demo_data:/data]
+    depends_on: {postgres: {condition: service_healthy}}
+  identity:
+    build: {context: .., dockerfile: infra/node.Dockerfile}
+    user: '10001:10001'
+    environment:
+      APP_ENV: local
+      OIDC_DATABASE_URL: postgresql://meridian_identity:${MERIDIAN_IDENTITY_DB_PASSWORD}@postgres:5432/meridian_demo
+      OIDC_ISSUER: http://127.0.0.1:4017
+      OIDC_CLIENT_ID: meridian-web
+      OIDC_REDIRECT_URI: http://127.0.0.1:3017/auth/callback
+      LOCAL_DATA_DIR: /identity
+      BIND_HOST: 0.0.0.0
+    command: [/bin/sh, -c, 'node scripts/identity-keys.mjs && node apps/identity/server.mjs']
+    volumes: [identity_data:/identity]
+    ports: ['127.0.0.1:4017:4017']
+    depends_on: {init: {condition: service_completed_successfully}}
+  api:
+    build: {context: .., dockerfile: infra/api.Dockerfile}
+    environment:
+      APP_ENV: local
+      DATABASE_URL: postgresql+psycopg://meridian_app:${MERIDIAN_API_DB_PASSWORD}@postgres:5432/meridian_demo
+      OIDC_ISSUER: http://127.0.0.1:4017
+      OIDC_INTERNAL_ORIGIN: http://identity:4017
+      OIDC_CLIENT_ID: meridian-web
+      OIDC_REDIRECT_URI: http://127.0.0.1:3017/auth/callback
+      WEB_ORIGIN: http://127.0.0.1:3017
+      API_ORIGIN: http://api:8017
+      COOKIE_SECURE: 'false'
+      LOCAL_DATA_DIR: /data
+    volumes: [demo_data:/data]
+    ports: ['127.0.0.1:8017:8017']
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8017/ready')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    depends_on: {init: {condition: service_completed_successfully}}
+  worker:
+    build: {context: .., dockerfile: infra/api.Dockerfile}
+    environment: &worker-env
+      APP_ENV: local
+      DATABASE_URL: postgresql+psycopg://meridian_worker:${MERIDIAN_WORKER_DB_PASSWORD}@postgres:5432/meridian_demo
+      WORKER_DATABASE_URL: postgresql+psycopg://meridian_worker:${MERIDIAN_WORKER_DB_PASSWORD}@postgres:5432/meridian_demo
+      LOCAL_DATA_DIR: /data
+    volumes: [demo_data:/data]
+    command: [python, -m, apps.worker.run]
+    depends_on: {api: {condition: service_healthy}}
+  web:
+    build: {context: .., dockerfile: infra/node.Dockerfile}
+    environment: {APP_ENV: local, WEB_ORIGIN: 'http://127.0.0.1:3017', COOKIE_SECURE: 'false'}
+    ports: ['127.0.0.1:3017:3017']
+    depends_on: {api: {condition: service_healthy}}
+  analytics-worker:
+    build: {context: .., dockerfile: infra/api.Dockerfile}
+    environment: *worker-env
+    volumes: [demo_data:/data]
+    command: [python, -m, apps.worker.analytics]
+    depends_on: {api: {condition: service_healthy}}
+volumes:
+  postgres_data:
+  demo_data:
+  identity_data:

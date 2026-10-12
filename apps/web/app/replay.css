@@ -1,0 +1,257 @@
+.replay-capture,
+.replay-history,
+.replay-detail,
+.audit-explorer {
+  padding: 24px;
+  margin-bottom: 22px;
+  min-width: 0;
+}
+.replay-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 16px;
+  margin: 16px 0;
+}
+.replay-fields label {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+.replay-search {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  margin: 20px 0;
+}
+.replay-search label {
+  flex: 1;
+}
+.replay-capture textarea,
+.replay-verify textarea {
+  display: block;
+  width: 100%;
+  min-height: 80px;
+  margin: 8px 0 16px;
+}
+.replay-capture fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.replay-detail section,
+.replay-detail details,
+.replay-verify {
+  margin: 26px 0;
+}
+.replay-boundary {
+  background: #eef2f7;
+  color: #34475d;
+  padding: 14px;
+  border-left: 3px solid #607b9a;
+}
+.replay-metadata {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 8px 16px;
+  margin: 20px 0;
+}
+.replay-metadata dt {
+  color: #48596d;
+}
+.replay-metadata dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.replay-metadata > div {
+  display: contents;
+}
+.replay-hash {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  color: #44566d;
+  max-width: 64ch;
+}
+.replay-path {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border: 1px solid #d9e1e9;
+  background: #f5f7fa;
+}
+.replay-path li {
+  padding: 16px;
+  border-right: 1px solid #d9e1e9;
+}
+.replay-path li:last-child {
+  border: 0;
+}
+.replay-path span {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #4e5e72;
+}
+.replay-state {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 12px;
+  border-radius: 4px;
+}
+.replay-state.match {
+  background: #e3f0e9;
+  color: #25533f;
+}
+.replay-state.failed {
+  background: #fae8e6;
+  color: #80392c;
+}
+.replay-pins {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.replay-pins > div {
+  padding: 14px;
+  border: 1px solid #d9e1e9;
+}
+.replay-pins dt {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.replay-pins dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.replay-records {
+  display: grid;
+  gap: 12px;
+  padding-left: 22px;
+}
+.replay-records li {
+  padding: 12px;
+  background: #f5f7fa;
+  overflow-wrap: anywhere;
+}
+.replay-records span {
+  display: block;
+  margin: 7px 0;
+  font-size: 13px;
+  color: #4c5d72;
+}
+.replay-json {
+  max-height: 480px;
+  white-space: pre-wrap;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  background: #f5f7fa;
+  padding: 16px;
+}
+.replay-choices {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  gap: 8px;
+  padding: 0;
+}
+.replay-choices .selected {
+  background: #213c61;
+  color: white;
+}
+.replay-detail .scenario-totals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.replay-detail .scenario-totals strong,
+.replay-detail .scenario-totals span {
+  display: block;
+}
+.replay-detail .scenario-totals strong {
+  margin-top: 6px;
+  font-size: 21px;
+  font-variant-numeric: tabular-nums;
+}
+.replay-detail .data-table,
+.audit-explorer .data-table {
+  min-width: 1050px;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.replay-detail .data-table caption,
+.audit-explorer .data-table caption {
+  text-align: left;
+  padding: 12px;
+  color: #4c5d72;
+  background: #f5f7fa;
+}
+.replay-detail .data-table th,
+.replay-detail .data-table td,
+.audit-explorer .data-table th,
+.audit-explorer .data-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 9px 10px;
+  border-bottom: 1px solid #e1e6ed;
+}
+.replay-detail .data-table thead,
+.audit-explorer .data-table thead {
+  background: #eef2f7;
+  color: #34475d;
+}
+.replay-detail .data-table tbody tr:nth-child(even),
+.audit-explorer .data-table tbody tr:nth-child(even) {
+  background: #fafbfd;
+}
+.replay-detail .data-table tbody tr:hover,
+.audit-explorer .data-table tbody tr:hover {
+  background: #f0f4f8;
+}
+.replay-detail .table-scroll,
+.audit-explorer .table-scroll {
+  border: 1px solid #d9e1e9;
+  margin: 18px 0;
+}
+.replay-detail summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 12px 0;
+}
+@media (max-width: 900px) {
+  .replay-path {
+    grid-template-columns: 1fr;
+  }
+  .replay-path li {
+    border-right: 0;
+    border-bottom: 1px solid #d9e1e9;
+  }
+  .replay-pins {
+    grid-template-columns: 1fr;
+  }
+  .replay-detail .scenario-totals {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .replay-capture,
+  .replay-history,
+  .replay-detail,
+  .audit-explorer {
+    padding: 16px;
+  }
+  .replay-metadata {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+  .replay-metadata dd {
+    margin-bottom: 10px;
+  }
+  .replay-search {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

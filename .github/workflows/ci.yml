@@ -1,0 +1,221 @@
+name: Meridian verification
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency:
+  group: meridian-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { fetch-depth: 0 }
+      - uses: ./.github/actions/dependencies
+      - name: Types, lint and frontend unit tests
+        run: |
+          make check
+          npm test
+      - name: Dependency, source and history security
+        run: |
+          npm audit --audit-level=low
+          .venv/bin/pip-audit --local --skip-editable
+          .venv/bin/ruff check apps/api/meridian apps/worker --select S
+          .venv/bin/python scripts/install_gitleaks.py
+          .local/tools/gitleaks git . --redact
+          .venv/bin/python scripts/generate_sbom.py
+  native-setup:
+    needs: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      MERIDIAN_PG_BIN: /usr/lib/postgresql/17/bin
+      EVIDENCE_PHASE: ci-native-setup
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: "24.21.0", cache: npm }
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with: { python-version: "3.12.14" }
+      - name: Install PostgreSQL 17 from the official signed repository
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl --fail --silent --show-error https://www.postgresql.org/media/keys/ACCC4CF8.asc --output /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+          printf '%s\n' 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt noble-pgdg main' | sudo tee /etc/apt/sources.list.d/meridian-pgdg.list >/dev/null
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y postgresql-17
+          "$MERIDIAN_PG_BIN/pg_ctl" --version
+      - name: Exact documented clean demo command without global application packages
+        run: |
+          test ! -e .venv
+          test ! -e .env
+          test ! -e .local/postgres
+          python -c "import importlib.util; assert importlib.util.find_spec('dotenv') is None; assert importlib.util.find_spec('sqlalchemy') is None"
+          make PYTHON=python demo
+          .venv/bin/python -m scripts.operator_db check
+      - name: Real OIDC personas, logout, keyboard and accessible native shell
+        run: |
+          npx playwright install --with-deps chromium
+          npm run e2e -- tests/e2e/foundation.spec.ts --project=chromium
+          .venv/bin/python scripts/ci.py browser-gate chromium
+      - name: Retain bounded synthetic setup evidence
+        if: always()
+        run: |
+          if test -x .venv/bin/python; then .venv/bin/python scripts/ci_evidence.py; fi
+      - name: Upload synthetic setup evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-setup-evidence
+          path: .local/public-evidence/
+          retention-days: 7
+      - name: Stop only the project-owned native processes
+        if: always()
+        run: |
+          if test -x .venv/bin/python; then make down; fi
+          if test -f .local/postgres/PG_VERSION; then "$MERIDIAN_PG_BIN/pg_ctl" -D .local/postgres -w -m fast stop; fi
+  backend:
+    needs: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [domain, analytics]
+    services:
+      postgres:
+        image: postgres:17.11
+        env:
+          POSTGRES_USER: meridian
+          POSTGRES_PASSWORD: ${{ github.run_id }}
+        ports: ["54329:5432"]
+        options: >-
+          --health-cmd "pg_isready -U meridian" --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      MERIDIAN_CI_DB_PASSWORD: ${{ github.run_id }}
+      MERIDIAN_SUITE: ${{ matrix.suite }}
+      EVIDENCE_PHASE: ci-worker-sigkill
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/dependencies
+      - uses: ./.github/actions/database
+        with:
+          roundtrip: ${{ matrix.suite == 'domain' }}
+          test-database: "true"
+      - name: Complete assigned API and PostgreSQL suite
+        run: .venv/bin/python scripts/ci.py tests "$MERIDIAN_SUITE"
+      - name: Identity PostgreSQL tests and generated API contracts
+        if: matrix.suite == 'domain'
+        run: |
+          node --env-file=.env --test apps/identity/*.test.mjs
+          make contracts
+          git diff --exit-code packages/contracts
+      - name: Actual worker SIGKILL and idempotent export recovery
+        if: matrix.suite == 'domain'
+        run: .venv/bin/python scripts/worker_kill_drill.py
+      - name: DuckDB foundation adapter
+        if: matrix.suite == 'analytics'
+        run: make analytics-foundation
+      - name: Publish bounded test evidence
+        if: always()
+        run: |
+          if test -x .venv/bin/python; then .venv/bin/python scripts/ci_evidence.py; fi
+      - name: Retain test evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: backend-${{ matrix.suite }}-evidence
+          path: .local/public-evidence/
+          retention-days: 7
+  browsers:
+    needs: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - browser: chromium
+            shard: "1"
+          - browser: chromium
+            shard: "2"
+          - browser: firefox
+            shard: "1"
+          - browser: firefox
+            shard: "2"
+          - browser: webkit
+            shard: "1"
+          - browser: webkit
+            shard: "2"
+    services:
+      postgres:
+        image: postgres:17.11
+        env:
+          POSTGRES_USER: meridian
+          POSTGRES_PASSWORD: ${{ github.run_id }}
+        ports: ["54329:5432"]
+        options: >-
+          --health-cmd "pg_isready -U meridian" --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      MERIDIAN_CI_DB_PASSWORD: ${{ github.run_id }}
+      MERIDIAN_BROWSER: ${{ matrix.browser }}
+      MERIDIAN_SHARD: ${{ matrix.shard }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/dependencies
+        with: { browser: "${{ matrix.browser }}" }
+      - uses: ./.github/actions/database
+      - name: Build and start the real stack
+        run: |
+          npm run build
+          .venv/bin/python scripts/verify_bundle.py
+          .venv/bin/python scripts/local.py up
+      - name: Complete all workflows in the assigned browser
+        run: |
+          npm run e2e -- --project="$MERIDIAN_BROWSER" --shard="$MERIDIAN_SHARD/2"
+          .venv/bin/python scripts/ci.py browser-gate "$MERIDIAN_BROWSER"
+      - name: Publish bounded synthetic evidence
+        if: always()
+        run: |
+          if test -x .venv/bin/python; then .venv/bin/python scripts/ci_evidence.py; fi
+      - name: Retain browser evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: browser-${{ matrix.browser }}-shard-${{ matrix.shard }}-evidence
+          path: |
+            .local/public-evidence/
+            .local/e2e-case-results.json
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Stop the project-owned processes
+        if: always()
+        run: |
+          if test -x .venv/bin/python; then make down; fi
+  verify:
+    needs: [checks, native-setup, backend, browsers]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Download sanitized browser case manifests
+        if: always()
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: browser-*-shard-*-evidence
+          path: .local/browser-evidence
+          merge-multiple: false
+      - name: Require complete browser case coverage
+        if: always()
+        run: python3 scripts/ci.py browser-aggregate .local/browser-evidence
+      - name: Require every complete suite
+        env:
+          MERIDIAN_CI_NEEDS: ${{ toJSON(needs) }}
+        run: python3 scripts/ci.py gate

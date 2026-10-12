@@ -1,0 +1,13 @@
+name: meridian
+version: '0.1.0'
+config-version: 2
+profile: meridian
+model-paths: [models]
+test-paths: [tests]
+clean-targets: [target, dbt_packages]
+models:
+  meridian:
+    +materialized: table
+    governed:
+      +enabled: "{{ var('business_run', false) }}"
+      +tags: [governed]

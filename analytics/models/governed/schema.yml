@@ -1,0 +1,30 @@
+version: 2
+models:
+  - name: dim_employee_scd2
+    columns:
+      - name: version_id
+        data_tests: [not_null, unique]
+      - name: employee_id
+        data_tests: [not_null]
+      - name: snapshot_id
+        data_tests: [not_null]
+  - name: dim_org_scd2
+    columns:
+      - name: version_id
+        data_tests: [not_null, unique]
+  - name: dim_position
+    columns:
+      - name: position_id
+        data_tests: [not_null, unique]
+  - name: fct_approval_decision
+    columns:
+      - name: decision_id
+        data_tests: [not_null, unique]
+  - name: fct_scenario_change
+    columns:
+      - name: operation_id
+        data_tests: [not_null]
+  - name: mart_source_reconciliation
+    columns:
+      - name: snapshot_id
+        data_tests: [not_null, unique]

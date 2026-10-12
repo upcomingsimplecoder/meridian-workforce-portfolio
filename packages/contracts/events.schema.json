@@ -1,0 +1,353 @@
+{
+  "$defs": {
+    "AnalyticsEventPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "format": "uuid",
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "const": "analytics_run",
+          "title": "Entity Type",
+          "type": "string"
+        },
+        "inputs_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Inputs Sha256",
+          "type": "string"
+        },
+        "source_batch_id": {
+          "format": "uuid",
+          "title": "Source Batch Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_type",
+        "entity_id",
+        "source_batch_id",
+        "inputs_sha256"
+      ],
+      "title": "AnalyticsEventPayload",
+      "type": "object"
+    },
+    "CompCycleEventPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "format": "uuid",
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "const": "comp_cycle",
+          "title": "Entity Type",
+          "type": "string"
+        },
+        "lock_id": {
+          "format": "uuid",
+          "title": "Lock Id",
+          "type": "string"
+        },
+        "source_batch_id": {
+          "format": "uuid",
+          "title": "Source Batch Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_type",
+        "entity_id",
+        "lock_id",
+        "source_batch_id"
+      ],
+      "title": "CompCycleEventPayload",
+      "type": "object"
+    },
+    "CompProposalEventPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "cycle_id": {
+          "format": "uuid",
+          "title": "Cycle Id",
+          "type": "string"
+        },
+        "entity_id": {
+          "format": "uuid",
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "const": "comp_proposal",
+          "title": "Entity Type",
+          "type": "string"
+        },
+        "revision_id": {
+          "format": "uuid",
+          "title": "Revision Id",
+          "type": "string"
+        },
+        "source_batch_id": {
+          "format": "uuid",
+          "title": "Source Batch Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_type",
+        "entity_id",
+        "cycle_id",
+        "revision_id",
+        "source_batch_id"
+      ],
+      "title": "CompProposalEventPayload",
+      "type": "object"
+    },
+    "IdentityEventPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "const": "principal",
+          "title": "Entity Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_type",
+        "entity_id"
+      ],
+      "title": "IdentityEventPayload",
+      "type": "object"
+    },
+    "ReplayEventPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "format": "uuid",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "capsule_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Capsule Sha256",
+          "type": "string"
+        },
+        "entity_id": {
+          "format": "uuid",
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "const": "replay_capsule",
+          "title": "Entity Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_type",
+        "entity_id",
+        "attempt_id",
+        "capsule_sha256"
+      ],
+      "title": "ReplayEventPayload",
+      "type": "object"
+    },
+    "ScenarioEventPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "format": "uuid",
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "const": "scenario",
+          "title": "Entity Type",
+          "type": "string"
+        },
+        "revision_id": {
+          "format": "uuid",
+          "title": "Revision Id",
+          "type": "string"
+        },
+        "source_batch_id": {
+          "format": "uuid",
+          "title": "Source Batch Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_type",
+        "entity_id",
+        "revision_id",
+        "source_batch_id"
+      ],
+      "title": "ScenarioEventPayload",
+      "type": "object"
+    },
+    "SourceEventPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "const": "source_batch",
+          "title": "Entity Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_type",
+        "entity_id"
+      ],
+      "title": "SourceEventPayload",
+      "type": "object"
+    },
+    "TalentCycleEventPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "format": "uuid",
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "entity_type": {
+          "const": "talent_cycle",
+          "title": "Entity Type",
+          "type": "string"
+        },
+        "lock_id": {
+          "format": "uuid",
+          "title": "Lock Id",
+          "type": "string"
+        },
+        "source_batch_id": {
+          "format": "uuid",
+          "title": "Source Batch Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_type",
+        "entity_id",
+        "lock_id",
+        "source_batch_id"
+      ],
+      "title": "TalentCycleEventPayload",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "aggregate_id": {
+      "title": "Aggregate Id",
+      "type": "string"
+    },
+    "aggregate_version": {
+      "title": "Aggregate Version",
+      "type": "integer"
+    },
+    "correlation_id": {
+      "format": "uuid",
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "event_id": {
+      "format": "uuid",
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "enum": [
+        "identity.login.v1",
+        "identity.logout.v1",
+        "source_batch.received.v1",
+        "source_batch.published.v1",
+        "scenario.revision_created.v1",
+        "scenario.approved.v1",
+        "comp.proposal_revision_created.v1",
+        "comp.proposal_submitted.v1",
+        "comp.proposal_returned.v1",
+        "comp.cycle_locked.v1",
+        "comp.export_created.v1",
+        "talent.review_locked.v1",
+        "analytics.run_requested.v1",
+        "governance.replay_recorded.v1"
+      ],
+      "title": "Event Type",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "payload": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/IdentityEventPayload"
+        },
+        {
+          "$ref": "#/$defs/SourceEventPayload"
+        },
+        {
+          "$ref": "#/$defs/ScenarioEventPayload"
+        },
+        {
+          "$ref": "#/$defs/CompProposalEventPayload"
+        },
+        {
+          "$ref": "#/$defs/CompCycleEventPayload"
+        },
+        {
+          "$ref": "#/$defs/TalentCycleEventPayload"
+        },
+        {
+          "$ref": "#/$defs/AnalyticsEventPayload"
+        },
+        {
+          "$ref": "#/$defs/ReplayEventPayload"
+        }
+      ],
+      "title": "Payload"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "source_batch_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Batch Id"
+    }
+  },
+  "required": [
+    "event_id",
+    "event_type",
+    "schema_version",
+    "aggregate_id",
+    "aggregate_version",
+    "occurred_at",
+    "correlation_id",
+    "payload"
+  ],
+  "title": "EventEnvelope",
+  "type": "object"
+}

@@ -1,0 +1,11 @@
+.git
+.env
+.env.*
+.local
+.venv
+node_modules
+**/node_modules
+**/.next
+test-results
+playwright-report
+docs/evidence

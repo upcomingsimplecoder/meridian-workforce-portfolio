@@ -1,0 +1,11 @@
+version: 2
+models:
+  - name: stg_foundation
+    description: Actual runtime source counts for local adapter connectivity; not business workforce metrics.
+    columns:
+      - name: seed_version
+        data_tests: [not_null, unique]
+      - name: principal_count
+        data_tests: [not_null]
+      - name: source_as_of
+        data_tests: [not_null]

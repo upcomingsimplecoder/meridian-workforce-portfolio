@@ -1,0 +1,16 @@
+version: 2
+sources:
+  - name: meridian_raw
+    database: "{{ env_var('MERIDIAN_SF_DATABASE', 'MERIDIAN_ANALYTICS') }}"
+    schema: MERIDIAN_RAW
+    tables:
+      - {name: workforce, identifier: WORKFORCE}
+      - {name: orgs, identifier: ORGS}
+      - {name: comp, identifier: COMP}
+      - {name: pools, identifier: POOLS}
+      - {name: decisions, identifier: DECISIONS}
+      - {name: forecast, identifier: FORECAST}
+      - {name: changes, identifier: CHANGES}
+      - {name: quality, identifier: QUALITY}
+      - {name: calendar, identifier: CALENDAR}
+      - {name: metadata, identifier: METADATA}
