@@ -36,10 +36,11 @@ checked on download.
 
 ## Deployment and verification
 
-The frontend, API, and synthetic OIDC issuer are live from main commit
-`76c10ebeb7d7170cc47d36bca8bfe8d763f123fc`. Supabase provides PostgreSQL and
-private artifact storage. The free Render setup runs two consumers beside the
-API. Hosted journeys and manual keyboard review are not yet verified.
+The frontend, API, and synthetic OIDC issuer are live. The current API runs
+private main revision `9d532a9daec0abf9910f3013b2e6eed18f23ed43` on Render.
+Supabase provides PostgreSQL and private artifact storage. The free Render
+setup runs two consumers beside the API. Hosted journeys and manual keyboard
+review are not yet verified.
 
 The public main workflow passed 826 Python tests, 18 PostgreSQL identity tests, 60
 frontend tests, 117 browser cases across Chromium, Firefox, and WebKit, 12
