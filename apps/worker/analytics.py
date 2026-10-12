@@ -67,7 +67,7 @@ def tick() -> int:
                         or str(envelope.correlation_id) != run.request_id
                     ):
                         raise ValueError("Analytical event does not match its frozen request")
-                    execute_run(db, run)
+                    execute_run(db, run, preserve=(event,))
             except Exception as error:
                 span.set_status(Status(StatusCode.ERROR))
                 event.attempts += 1
