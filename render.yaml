@@ -20,6 +20,7 @@ services:
       - { key: SUPABASE_STORAGE_BUCKET, value: meridian-artifacts }
       - { key: DBT_SEND_ANONYMOUS_USAGE_STATS, value: "false" }
       - { key: MERIDIAN_DBT_THREADS, value: "1" }
+      - { key: MERIDIAN_DUCKDB_MEMORY_LIMIT, value: 128MB }
       - { key: ANALYTICS_DBT_TIMEOUT_SECONDS, value: "600" }
       - { key: DATABASE_URL, sync: false }
       - { key: WORKER_DATABASE_URL, sync: false }

@@ -1,11 +1,13 @@
 """Real isolated DuckDB/dbt runs; publish only count/sum/hash reconciled results."""
 
+import gc
 import hashlib
 import hmac
 import json
 import os
 import re
 import subprocess
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 from uuid import UUID
@@ -278,7 +280,7 @@ def compare_report(connection: Any, run: AnalyticsRun) -> dict[str, Any]:
     }
 
 
-def execute_run(db: Session, run: AnalyticsRun) -> AnalyticsResult:
+def execute_run(db: Session, run: AnalyticsRun, *, preserve: Sequence[Any] = ()) -> AnalyticsResult:
     existing = db.get(AnalyticsResult, run.id)
     if existing:
         return existing
@@ -297,6 +299,17 @@ def execute_run(db: Session, run: AnalyticsRun) -> AnalyticsResult:
     )
     if inputs != run.inputs:
         raise RuntimeError("ANALYTICS_PINNED_SOURCE_CHANGED")
+    # The extract uses ORM rows for lineage and authorization checks. Once the
+    # scalar, allowlisted export is ready, release those objects before the
+    # DuckDB/dbt child starts. This keeps the hosted free-tier process below
+    # its memory limit without changing the pinned inputs.
+    db.expunge_all()
+    db.add(run)
+    # The outbox consumer keeps its locked event in this same transaction. It
+    # must remain attached so the consumer can persist DONE or retry state
+    # after this memory release step.
+    for item in preserve:
+        db.add(item)
     directory = Path(settings().local_data_dir).resolve() / "analytics/runs" / str(UUID(run.id))
     directory.mkdir(parents=True, mode=0o700, exist_ok=True)
     export_dir = directory / "loaded"
@@ -361,6 +374,10 @@ def execute_run(db: Session, run: AnalyticsRun) -> AnalyticsResult:
                 row_count=len(rows),
             )
         )
+    # Artifacts and delivery intents are now flushed to the transaction. Do not
+    # retain every extracted row while dbt materializes its derived catalog.
+    del data
+    gc.collect()
     catalog = build_dbt(directory, export_dir, run.id)
     with duckdb.connect(str(catalog), read_only=True) as connection:
         report = compare_report(connection, run)

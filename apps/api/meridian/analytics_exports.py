@@ -2,6 +2,7 @@
 
 import calendar
 import hashlib
+import os
 import tempfile
 from datetime import UTC, date, datetime
 from decimal import Decimal
@@ -202,6 +203,8 @@ def parquet_bytes(name: str, rows: list[dict[str, Any]]) -> bytes:
         duckdb.connect() as connection,
     ):
         connection.execute("SET threads=1")
+        memory_limit = os.environ.get("MERIDIAN_DUCKDB_MEMORY_LIMIT", "256MB").replace("'", "''")
+        connection.execute(f"SET memory_limit='{memory_limit}'")
         connection.execute(
             "CREATE TABLE exported ("
             + ",".join(f'"{key}" {kind}' for key, kind in columns.items())

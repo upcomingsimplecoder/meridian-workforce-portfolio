@@ -32,7 +32,7 @@ def main():
 
     actual = worker.execute_run
 
-    def held(db, run):
+    def held(db, run, *, preserve=()):
         if run.id not in allowed:
             raise ValueError("Worker selected an unrelated analytical run")
         marker = barrier / (run.id + ".locked")
@@ -44,7 +44,7 @@ def main():
             if time.monotonic() > deadline:
                 raise TimeoutError("Test barrier was not released")
             time.sleep(0.02)
-        actual(db, run)
+        actual(db, run, preserve=preserve)
 
     worker.execute_run = held
     worker.main()

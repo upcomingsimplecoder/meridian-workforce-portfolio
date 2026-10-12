@@ -237,14 +237,14 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Download sanitized browser case manifests
-        if: always() && needs.scope.outputs.full == 'true'
+        if: always() && needs.scope.outputs.full == 'true' && needs.browsers.result == 'success'
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: browser-*-shard-*-evidence
           path: .local/browser-evidence
           merge-multiple: false
       - name: Require complete browser case coverage
-        if: always() && needs.scope.outputs.full == 'true'
+        if: always() && needs.scope.outputs.full == 'true' && needs.browsers.result == 'success'
         run: python3 scripts/ci.py browser-aggregate .local/browser-evidence
       - name: Require every complete suite
         env:
