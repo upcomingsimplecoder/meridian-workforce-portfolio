@@ -2,10 +2,12 @@
 
 ## Source and CI
 
-The deployed release is private archive merge
-`76c10ebeb7d7170cc47d36bca8bfe8d763f123fc`. The curated public source is based
-on that release. Its [main workflow](https://github.com/upcomingsimplecoder/meridian-workforce-portfolio/actions/runs/38278478309)
-passed all required jobs at `98ed005701cede0f6bcc9e6350730c19d800bb89`.
+The live API deployment runs private main revision
+`9d532a9daec0abf9910f3013b2e6eed18f23ed43` on Render deployment
+`dep-db6m8vrrjlhs73fdnfvg`. The curated public source is maintained in its own
+repository. Its [green main workflow](https://github.com/upcomingsimplecoder/meridian-workforce-portfolio/actions/runs/38317784261)
+passed all required jobs after the analytics worker fixes. Public main is merge
+`358262527f7db838b0169b0cd6d2e71e00734cb4`.
 
 That run passed 776 domain and 50 analytics tests, 18 PostgreSQL identity
 tests, 60 frontend tests, and 117 browser cases: 39 each on Chromium,

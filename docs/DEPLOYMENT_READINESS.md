@@ -2,14 +2,15 @@
 
 ## Hosted layout
 
-The production frontend is [Meridian](https://meridian-workforce.vercel.app),
-deployed from main commit
-`76c10ebeb7d7170cc47d36bca8bfe8d763f123fc`. The API is
+The production frontend is [Meridian](https://meridian-workforce.vercel.app).
+The API is
 [meridian-api](https://meridian-api-icc5.onrender.com/ready), and the separate
 synthetic OIDC issuer is
 [meridian-identity](https://meridian-identity-3g3y.onrender.com/.well-known/openid-configuration).
-Both Render services run on the free plan and are configured to deploy only
-after GitHub checks pass.
+The current API deployment runs private main revision
+`9d532a9daec0abf9910f3013b2e6eed18f23ed43` on Render deployment
+`dep-db6m8vrrjlhs73fdnfvg`. Both Render services run on the free plan and are
+configured to deploy only after GitHub checks pass.
 
 A dedicated Supabase project hosts PostgreSQL and the private
 `meridian-artifacts` bucket. API, worker, identity, and operator roles are
