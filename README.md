@@ -97,15 +97,16 @@ Analytics drift stays unpublished until a rerun matches its pinned source. Local
 
 ## Verification
 
-The [public main CI run](https://github.com/upcomingsimplecoder/meridian-workforce-portfolio/actions/runs/38317784261) passed all required jobs:
+The [release PR CI run](https://github.com/upcomingsimplecoder/meridian-workforce-portfolio/actions/runs/38329959041) passed all required jobs:
 
 | Check | Result |
 | --- | --- |
-| Python domain and analytics | 826 passed |
+| Python domain | 776 passed |
+| Python analytics | 50 passed |
 | PostgreSQL identity | 18 passed |
-| Frontend | 60 passed |
-| Browser E2E | 117 passed across three engines |
-| OIDC and clean demo setup | 12 passed |
+| Frontend | 68 passed |
+| Browser E2E | 117 passed across Chromium, Firefox and WebKit |
+| OIDC, logout, keyboard and accessible shell | 12 passed |
 | DuckDB/dbt | One model and five data tests passed |
 
 The worker-kill drill stopped a consumer after it wrote an export but before acknowledgement. Retry recovered one artifact and one receipt. Migration, database reconnect, isolated restore, independent financial-oracle, and reconciliation tests also ran. See the [audit summary](docs/PUBLIC_AUDIT_SUMMARY.md) for the exact evidence and hosted-test boundary.
