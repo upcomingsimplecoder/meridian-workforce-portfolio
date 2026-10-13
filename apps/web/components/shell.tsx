@@ -19,22 +19,121 @@ import {
   Users,
   Wallet,
   X,
+  type LucideIcon,
 } from "lucide-react";
 import { api, ApiError, getMe, type Me } from "@/lib/api";
 import { logoutSucceeded } from "@/lib/session";
 
-export const navigation = [
-  { label: "Overview", href: "/", icon: LayoutDashboard },
-  { label: "Workforce", href: "/workforce", icon: Users },
-  { label: "Scenario Lab", href: "/scenarios", icon: ChartNoAxesCombined },
-  { label: "Compensation", href: "/compensation", icon: Wallet },
-  { label: "Talent", href: "/talent", icon: ClipboardCheck },
-  { label: "Analytics", href: "/analytics", icon: ChartNoAxesCombined },
-  { label: "Operations", href: "/operations", icon: ShieldCheck },
-  { label: "Data Quality", href: "/data-quality", icon: Database },
-  { label: "Audit", href: "/audit", icon: FileClock },
-  { label: "Settings", href: "/settings", icon: Settings2 },
+type NavigationIdentity = Pick<Me, "capabilities" | "grants">;
+type NavigationItem = {
+  label: string;
+  href: string;
+  icon: LucideIcon;
+  section: "workspace" | "governance";
+  visible: (me: NavigationIdentity) => boolean;
+};
+
+const alwaysVisible = () => true;
+const hasAny =
+  (...capabilities: string[]) =>
+  (me: NavigationIdentity) =>
+    capabilities.some((capability) => me.capabilities.includes(capability));
+
+const canViewCompensation = (me: NavigationIdentity) =>
+  me.capabilities.includes("comp.evidence") ||
+  (me.capabilities.includes("people.pay") &&
+    [
+      "comp.manage",
+      "comp.read",
+      "comp.propose",
+      "comp.approve",
+      "comp.hr.signoff",
+      "comp.finance.signoff",
+    ].some((capability) => me.capabilities.includes(capability)));
+
+const canViewTalent = (me: NavigationIdentity) =>
+  me.capabilities.includes("audit.read") ||
+  (me.capabilities.includes("people.read") &&
+    ["reviews.manage", "reviews.write", "reviews.approve"].some((capability) =>
+      me.capabilities.includes(capability),
+    ));
+
+export const navigation: NavigationItem[] = [
+  {
+    label: "Overview",
+    href: "/",
+    icon: LayoutDashboard,
+    section: "workspace",
+    visible: alwaysVisible,
+  },
+  {
+    label: "Workforce",
+    href: "/workforce",
+    icon: Users,
+    section: "workspace",
+    visible: hasAny("people.read", "analytics.read"),
+  },
+  {
+    label: "Scenario Lab",
+    href: "/scenarios",
+    icon: ChartNoAxesCombined,
+    section: "workspace",
+    visible: hasAny("planning.write"),
+  },
+  {
+    label: "Compensation",
+    href: "/compensation",
+    icon: Wallet,
+    section: "workspace",
+    visible: canViewCompensation,
+  },
+  {
+    label: "Talent",
+    href: "/talent",
+    icon: ClipboardCheck,
+    section: "workspace",
+    visible: canViewTalent,
+  },
+  {
+    label: "Analytics",
+    href: "/analytics",
+    icon: ChartNoAxesCombined,
+    section: "workspace",
+    visible: hasAny("analytics.full", "analytics.evidence", "analytics.read"),
+  },
+  {
+    label: "Operations",
+    href: "/operations",
+    icon: ShieldCheck,
+    section: "governance",
+    visible: hasAny("operations.read"),
+  },
+  {
+    label: "Data Quality",
+    href: "/data-quality",
+    icon: Database,
+    section: "governance",
+    visible: hasAny("ingestion.write"),
+  },
+  {
+    label: "Audit",
+    href: "/audit",
+    icon: FileClock,
+    section: "governance",
+    visible: hasAny("replay.full", "replay.evidence"),
+  },
+  {
+    label: "Settings",
+    href: "/settings",
+    icon: Settings2,
+    section: "governance",
+    visible: alwaysVisible,
+  },
 ];
+
+export function visibleNavigation(me: NavigationIdentity) {
+  return navigation.filter((item) => item.visible(me));
+}
 
 export function Brand() {
   return (
@@ -145,6 +244,7 @@ export function Shell({ children }: { children: (me: Me) => React.ReactNode }) {
   }
   const current =
     navigation.find((n) => n.href === pathname)?.label || "Workspace";
+  const visibleItems = visibleNavigation(me);
   return (
     <div className="app-shell">
       <a tabIndex={0} className="skip-link" href="#main-content">
@@ -172,11 +272,12 @@ export function Shell({ children }: { children: (me: Me) => React.ReactNode }) {
           <ChevronRight size={14} />
         </div>
         <nav aria-label="Main navigation">
-          {navigation.map((item, i) => (
+          {visibleItems.map((item, i) => (
             <div key={item.href}>
-              {i === 6 && (
-                <div className="nav-section">GOVERNANCE & SYSTEM</div>
-              )}
+              {item.section === "governance" &&
+                visibleItems[i - 1]?.section !== item.section && (
+                  <div className="nav-section">GOVERNANCE & SYSTEM</div>
+                )}
               <Link
                 tabIndex={0}
                 onClick={() => setMenu(false)}

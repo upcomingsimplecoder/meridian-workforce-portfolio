@@ -377,7 +377,9 @@ test("manager cannot load source records, previews or source exports", async ({
   page,
 }) => {
   await signIn(page, "manager-a");
-  await page.getByRole("link", { name: "Data Quality", exact: true }).click();
+  // The steward-only link is hidden for managers, so exercise the denial by
+  // navigating directly to the protected route.
+  await page.goto("/data-quality");
   await expect(
     page.getByRole("heading", { name: "Source stewardship access required" }),
   ).toBeVisible();

@@ -420,7 +420,9 @@ test("executive and unrelated managers cannot retrieve replay, export or audit; 
     "approver",
   ]) {
     await switchIdentity(page, persona);
-    await page.getByRole("link", { name: "Audit", exact: true }).click();
+    // Restricted routes stay testable by direct navigation even when the
+    // server-grant-aware sidebar omits the link.
+    await page.goto("/audit");
     await expect(
       page.getByRole("heading", { name: "Decision evidence is restricted" }),
     ).toBeVisible();

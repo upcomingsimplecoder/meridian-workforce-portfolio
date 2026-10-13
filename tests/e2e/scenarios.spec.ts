@@ -6,7 +6,9 @@ import { signIn, chooseHistoricalSource } from "./helpers";
 
 async function lab(page: Page, persona: string) {
   await signIn(page, persona);
-  await page.getByRole("link", { name: "Scenario Lab", exact: true }).click();
+  // Direct navigation keeps restricted-route coverage independent of sidebar
+  // visibility, which is governed by the current server grants.
+  await page.goto("/scenarios");
   await expect(
     page.getByRole("heading", { name: "Scenario Lab", exact: true }),
   ).toBeVisible();
