@@ -26,7 +26,8 @@ async function studio(page: Page, persona: string, title?: string) {
   }
   await signIn(page, persona);
   test.setTimeout(240000);
-  await page.getByRole("link", { name: "Compensation", exact: true }).click();
+  // Restricted personas may not receive a Compensation link in the sidebar.
+  await page.goto("/compensation");
   await expect(
     page.getByRole("heading", { name: "Compensation Studio" }),
   ).toBeVisible();
