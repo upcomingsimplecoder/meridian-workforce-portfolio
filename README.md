@@ -133,7 +133,7 @@ make down
 
 ## Deployment
 
-The live frontend is [meridian-workforce.vercel.app](https://meridian-workforce.vercel.app). The API readiness endpoint is [meridian-api-icc5.onrender.com/ready](https://meridian-api-icc5.onrender.com/ready), and the synthetic OIDC issuer is [meridian-identity-3g3y.onrender.com](https://meridian-identity-3g3y.onrender.com/.well-known/openid-configuration). The current API deployment runs private main revision `9d532a9daec0abf9910f3013b2e6eed18f23ed43` on Render deployment `dep-db6m8vrrjlhs73fdnfvg`. Public portfolio main is merge `358262527f7db838b0169b0cd6d2e71e00734cb4`.
+The live frontend is [meridian-workforce.vercel.app](https://meridian-workforce.vercel.app). The API readiness endpoint is [meridian-api-icc5.onrender.com/ready](https://meridian-api-icc5.onrender.com/ready), and the synthetic OIDC issuer is [meridian-identity-3g3y.onrender.com](https://meridian-identity-3g3y.onrender.com/.well-known/openid-configuration).
 
 Supabase hosts the transactional database and private `meridian-artifacts` bucket. The free Render option runs the outbox/export and analytics consumers as supervised processes beside the API. Their heartbeat rows were current in the recorded database check. They share memory and availability, and the services can sleep. DuckDB/dbt powers the analytical implementation. Snowflake is not required or live.
 
