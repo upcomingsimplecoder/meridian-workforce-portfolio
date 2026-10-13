@@ -20,7 +20,9 @@ import {
 } from "./analytics-business";
 type Run = components["schemas"]["AnalyticsRunView"];
 async function consolePage(page: Page) {
-  await page.getByRole("link", { name: "Analytics", exact: true }).click();
+  // Direct navigation keeps restricted-route coverage independent of sidebar
+  // visibility, which is governed by the current server grants.
+  await page.goto("/analytics");
   await expect(
     page.getByRole("heading", { name: "Analytics & reconciliation" }),
   ).toBeVisible();
