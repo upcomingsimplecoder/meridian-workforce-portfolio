@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest==9.1.1", "pytest-cov==7.1.0", "ruff==0.16.10", "mypy==2.4.0", "uv==0.12.24", "pip-audit==2.10.1", "httpx2==2.13.1"]
+dev = ["pytest==9.1.1", "pytest-cov==7.1.0", "ruff==0.16.10", "mypy==2.4.0", "uv==0.13.4", "pip-audit==2.10.1", "httpx2==2.13.1"]
 
 
 [tool.setuptools.packages.find]
